@@ -3,6 +3,29 @@
   <title>test</title>
 </head>
 <body>
+  <button id="button">start</button>
+  <div id="status">none</div>
 </body>
-<script type="text/javascript" src="./loop2.js"></script>
+<script type="text/javascript">
+  document.getElementById("button").onclick = function (e) {
+    var status = document.getElementById("status");
+    try {
+      var worker = new Worker('./loopWorker.js');
+      worker.addEventListener('message', function(e) {
+        console.log(e.data);
+        status.innerHTML = "finished";
+        var ta =  document.createElement("textarea");
+        ta.value = e.data;
+        document.body.appendChild(ta);
+      }, false);
+      worker.postMessage("");
+      status.innerHTML = "running";
+    } catch (e) {
+      console.log(e);
+      var script = document.createElement("script");
+      script.src = "./loop.js";
+      document.body.appendChild(script);
+    }
+  }
+</script>
 </html>
